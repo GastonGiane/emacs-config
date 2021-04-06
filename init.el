@@ -11,7 +11,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(monokai-pro-theme magit rainbow-delimiters doom-modeline use-package)))
+   '(counsel monokai-pro-theme magit rainbow-delimiters doom-modeline use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -19,7 +19,7 @@
  ;; If there is more than one, they won't work right.
  )
 
-(add-to-list 'default-frame-alist '(font . "Fira Mono-12"))		;; Set the font
+(add-to-list 'default-frame-alist '(font . "Fira Mono-14"))		;; Set the font
 (scroll-bar-mode -1)											;; Disable scrollbar
 (tool-bar-mode -1)												;; Disable tool bar
 (tooltip-mode -1)												;; Disable tool tip
@@ -61,6 +61,14 @@
   :ensure t
   :config
   (evil-mode 1))
+
+(use-package counsel
+  :ensure t
+  :bind (("M-x" . counsel-M-x)
+         ("C-x b" . counsel-ibuffer)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history)))
 
 (require 'org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
