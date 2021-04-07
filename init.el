@@ -25,6 +25,7 @@
 (tooltip-mode -1)												;; Disable tool tip
 (menu-bar-mode -1)												;; Disable menu bar
 (setq visible-bell t)											;; Enable visual bell
+(global-visual-line-mode 1)
 (setq-default display-line-numbers 'relative)
 (setq-default tab-width 4)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
