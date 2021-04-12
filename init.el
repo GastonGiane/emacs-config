@@ -1,8 +1,8 @@
 ;; Initialize packages sources
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
+			 			 ("org" . "https://orgmode.org/elpa/")
+						 ("elpa" . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 
 (custom-set-variables
@@ -25,6 +25,7 @@
 (tooltip-mode -1)												;; Disable tool tip
 (menu-bar-mode -1)												;; Disable menu bar
 (setq visible-bell t)											;; Enable visual bell
+(electric-pair-mode 1)											;; Set Auto Pairs
 (global-visual-line-mode 1)
 (setq-default display-line-numbers 'relative)
 (setq-default tab-width 4)
@@ -39,12 +40,12 @@
 (use-package monokai-pro-theme
   :ensure t
   :config
-  (load-theme 'monokai-pro-octagon t))
+  (load-theme 'monokai-pro t))
 
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 30)))
+  :custom ((doom-modeline-height 15)))
 
 (use-package all-the-icons
   :ensure t)
@@ -73,3 +74,15 @@
 
 (require 'org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+(use-package rainbow-mode
+  :ensure t
+  :hook (prog-mode . rainbow-mode))
+
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+	  backup-by-copying t
+	  version-control t
+	  delete-old-verstion t
+	  kept-new-versions 20
+	  kept-old-versions 5
+	  )
