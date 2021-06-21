@@ -1,0 +1,145 @@
+#+TITLE: Emacs Config
+#+AUTHOR: Gaston Giane
+#+PROPERTY: header-args :results silent :tangle "init.el"
+* Emacs Config
+* Basic Customization
+  #+begin_src emacs-lisp
+    (setq font-use-system-font t)										;; Use the system font
+    (scroll-bar-mode -1)												;; Disable scroll bar
+    (tool-bar-mode -1)													;; Disable tool bar
+    (menu-bar-mode -1)													;; Disable menu bar
+    (show-paren-mode 1)
+    (load-theme 'wombat)												;; Load Theme
+    (line-number-mode t)												;; Display line numbers in the modeline
+    (column-number-mode t)												;; Display column numbers in the modeline
+    (electric-pair-mode 1)												;; Enable autopairs
+    (prefer-coding-system 'utf-8)										;; Set encoding
+    (fset 'yes-or-no-p 'y-or-n-p)										;; Change the "yes or no" message for "y or n"
+    (setq-default display-line-numbers 'relative)
+    (setq-default tab-width 4)											;; Set tabwidth
+    (setq ring-bell-function 'ignore)									;; Disable nuisance bell
+    (setq inhibit-startup-screen t)										;; Remove the startup screen
+    (setq initial-scratch-message nil)									;; Remove the message in scratch buffer
+    (setq initial-major-mode 'org-mode)
+    (setq ispell-dictionary "es")										;; Set the default dictionary for ispell
+    (setq backup-directory-alist '(("" . "~/.emacs.d/backup"))
+	  delete-old-versions t)
+  #+end_src
+* Org Mode
+  #+begin_src emacs-lisp
+	(with-eval-after-load 'ox-latex
+	  (add-to-list 'org-latex-classes
+				   '("org-article"
+					 "\\documentclass{article}[a4paper, 12pt]
+	\\usepackage[AUTO]{inputenc}
+	\\usepackage[T1]{fontenc}
+	\\usepackage[sfdefault]{FiraSans}
+	\\renewcommand*\\oldstylenums[1]{{\\firaoldstyle#1}}
+	\\usepackage{graphicx}
+	\\usepackage[hidelinks]{hyperref}
+	\\usepackage[left=2.5cm, right=2cm, top=2cm, bottom=2.5cm]{geometry}
+
+	\\usepackage{fancyhdr}
+	\\pagestyle{fancy}
+	\\fancyhf{}
+	\\rhead{This is a test}
+	\\lhead{Insitution NAME}
+	\\lfoot{Gianello Gastón}
+	\\rfoot{\\thepage}
+
+	\\usepackage{amsmath}
+
+			 [NO-DEFAULT-PACKAGES]
+			 [PACKAGES]
+			 [EXTRA]"
+					 ("\\section{%s}" . "\\section*{%s}")
+					 ("\\subsection{%s}" . "\\subsection*{%s}")
+					 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+					 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+					 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+	  #+end_src
+* Keybindings
+  #+begin_src emacs-lisp
+	 (global-set-key (kbd "<C-tab>") 'indent-relative)
+  #+end_src
+* Customs Faces
+  #+begin_src emacs-lisp
+	(custom-set-faces
+	 '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
+	 '(org-level-2 ((t (:inherit outline-1 :height 1.4 :weight bold))))
+	 '(org-level-3 ((t (:inherit outline-1 :height 1.3 :weight bold))))
+	 '(org-level-4 ((t (:inherit outline-1 :height 1.2 :weight bold))))
+	 '(org-level-5 ((t (:inherit outline-1 :height 1.1 :weight bold))))
+	 )
+  #+end_src
+* Linum
+  #+begin_src emacs-lisp
+	(global-linum-mode 1)
+  #+end_src
+* Do List
+  #+begin_src emacs-lisp
+	(dolist (mode '(org-mode-hook
+					term-mode-hook
+					shell-mode-hook
+					eshell-mode-hook
+					dired-mode-hook))
+	  (add-hook mode (lambda () (linum-mode 0))))
+
+	(dolist (mode '(org-mode-hook
+					tex-mode-hook))
+	  (add-hook mode (lambda () (turn-on-flyspell))))
+  #+end_src
+* Melpa
+  #+begin_src emacs-lisp
+	(require 'package)
+	(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+	(package-initialize)
+  #+end_src
+** Yasnippet
+   #+begin_src emacs-lisp
+		  (setq yas-triggers-in-field t)
+		  (setq yas-indent-line t)
+		  (setq yas-prompt-functions '(yas-completing-prompt))
+		  (setq yas-new-snippet-default "# -*- mode: snippet -*-
+		# name: ${1:Snippet Name}
+		# key: ${2:Snippet Abbrev}
+		# group: ${3:Snippet Menu Grouping}
+	 	# binding: ${4:Direct Keybinding}
+		# contributor: Gaston Giane <https://github.com/GastonGiane>
+		# --
+		$0`(yas-escape-text yas-selected-text)`")
+		  (dolist (mode '(org-mode-hook
+						  tex-mode-hook))
+			(add-hook mode (lambda () (yas-global-mode))))
+   #+end_src
+** Ivy
+   #+begin_src emacs-lisp
+	 (ivy-mode)
+	 (setq ivy-use-virtual-buffers t)
+	 (setq enable-recursive-minibuffers t)
+	 (setq search-default-mode #'char-fold-to-regexp)
+	 ;; (global-set-key "C-s" 'swiper)
+	 (global-set-key (kbd "C-c C-r") 'ivy-resume)
+   #+end_src
+** Counsel
+   #+begin_src emacs-lisp
+	 (global-set-key (kbd "M-x") 'counsel-M-x)
+	 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+	 (global-set-key (kbd "C-h f") 'counsel-describe-function)
+	 (global-set-key (kbd "C-h v") 'counsel-describe-variable)
+	 (global-set-key (kbd "C-h o") 'counsel-describe-symbol)
+	 (global-set-key (kbd "C-h l") 'counsel-find-library)
+	 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+   #+end_src
+** Raibow Delimiters
+   #+begin_src emacs-lisp
+	 (rainbow-delimiters-mode)
+   #+end_src
+** Doom Modeline
+   #+begin_src emacs-lisp
+	 (setq doom-modeline-height 40)
+	 (setq doom-modeline-minor-modes t)
+	 (setq doom-modeline-buffer-encoding nil)
+	 (add-hook 'after-init-hook #'doom-modeline-mode)
+   #+end_src
+   
